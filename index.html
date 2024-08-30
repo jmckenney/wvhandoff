@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Session Sharing Test</title>
+    <script>
+        function setCookie(name, value, days) {
+            const d = new Date();
+            d.setTime(d.getTime() + (days * 24 * 60 * 60 * 1000));
+            const expires = "expires=" + d.toUTCString();
+            document.cookie = name + "=" + value + ";" + expires + ";path=/";
+        }
+
+        function getCookie(name) {
+            const nameEQ = name + "=";
+            const ca = document.cookie.split(';');
+            for (let i = 0; i < ca.length; i++) {
+                let c = ca[i];
+                while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+                if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
+            }
+            return null;
+        }
+
+        function isWebView() {
+            const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+            const iosWebView = /AppleWebKit(?!.*Safari)/i.test(userAgent);
+            return iosWebView;
+        }
+
+        window.onload = function() {
+            // Get values
+            const token = getCookie('token');
+            const userUuid = sessionStorage.getItem('userUuid');
+
+            // If not in a webview, set cookie and sessionStorage
+            if (!isWebView()) {
+                if (!token) setCookie('token', 'ABC', 1);
+                if (!userUuid) sessionStorage.setItem('userUuid', 'XYZ');
+            }
+
+            // Redirect to the custom URL scheme
+            const redirectToken = getCookie('token');
+            const redirectUserUuid = sessionStorage.getItem('userUuid');
+            if (redirectToken && redirectUserUuid) {
+                window.location.href = `x-example-app://callback?token=${redirectToken}&userUuid=${redirectUserUuid}`;
+            }
+        }
+    </script>
+</head>
+<body>
+    <h1>Session Sharing Test</h1>
+    <p>If you see this page, the redirect didn't work.</p>
+</body>
+</html>
