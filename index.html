@@ -23,12 +23,6 @@
             return null;
         }
 
-        function isWebView() {
-            const userAgent = navigator.userAgent || navigator.vendor || window.opera;
-            const iosWebView = /AppleWebKit(?!.*Safari)/i.test(userAgent);
-            return iosWebView;
-        }
-
         function getCurrentTimestamp() {
             const now = new Date();
             const hours = now.getHours().toString().padStart(2, '0');
@@ -38,24 +32,12 @@
         }
 
         window.onload = function() {
-            // Get values
-            const token = getCookie('token');
-            const userUuid = sessionStorage.getItem('userUuid');
-
-            // If not in a webview, set cookie with timestamp and sessionStorage
-            if (!isWebView()) {
-                if (!token) {
-                    const timestamp = getCurrentTimestamp();
-                    setCookie('token', timestamp, 1);
-                }
-                if (!userUuid) sessionStorage.setItem('userUuid', 'XYZ');
-            }
+            const oldCookie = getCookie('cookie');            
+            setCookie('cookie', getCurrentTimestamp(), 1);
 
             // Redirect to the custom URL scheme
-            const redirectToken = getCookie('token');
-            const redirectUserUuid = sessionStorage.getItem('userUuid');
-            if (redirectToken && redirectUserUuid) {
-                window.location.href = `x-example-app://callback?token=${redirectToken}&userUuid=${redirectUserUuid}`;
+            if (oldCookie) {
+                window.location.href = `x-example-app://callback?previous-cookie=${oldCookie}`;
             }
         }
     </script>
