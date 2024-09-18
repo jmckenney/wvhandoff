@@ -6,10 +6,7 @@
     <title>Session Sharing Test</title>
     <script>
         function setCookie(name, value, days) {
-            const d = new Date();
-            d.setTime(d.getTime() + (days * 24 * 60 * 60 * 1000));
-            const expires = "expires=" + d.toUTCString();
-            document.cookie = name + "=" + value + "; expires=" + expires + ";path=/";
+            document.cookie = name + "=" + value + ";max-age=31536000";
         }
 
         function getCookie(name) {
@@ -44,6 +41,6 @@
 </head>
 <body>
     <h1>Session Sharing Test</h1>
-    <p>If you see this page, the redirect didn't work.</p>
+    <p>If you are stuck on this page, the redirect didn't work.</p>
 </body>
 </html>
